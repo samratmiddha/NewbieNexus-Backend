@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 
 
 class Club(models.Model):
+    profile_picture=models.ImageField(upload_to="images/",blank=True,null=True)
     name=models.CharField(max_length=255)
     description=models.TextField(blank=True,null=True)
     verticals=models.TextField(blank=True,null=True)

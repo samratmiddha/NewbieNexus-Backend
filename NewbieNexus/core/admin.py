@@ -4,4 +4,3 @@ from core.models import *
 
 admin.site.register(Club)
 admin.site.register(Interest)
-admin.site.register(User)
