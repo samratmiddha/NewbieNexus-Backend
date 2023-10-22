@@ -4,8 +4,10 @@ from core.views import *
 from rest_framework import routers
 
 router = routers.SimpleRouter() 
-router.register(r'club',ClubViewSet,basename='ClubViewSet')
+router.register(r'clubs',ClubViewSet,basename='ClubViewSet')
 router.register(r'interests',InterestViewSet,basename='InterestViewSet')
 urlpatterns = [
-    path('',include(router.urls))
+    path('',include(router.urls)),
+    path('whoami/',check_login),
+    path('login/',login)
 ]

@@ -10,6 +10,10 @@ class Club(models.Model):
     prerequisites=models.TextField(blank=True,null=True)
     time_devotion=models.IntegerField(blank=True,null=True)
 
+    def __str__(self):
+        return f"{self.name}"
+
+
 class Interest(models.Model):
     is_user_interest=models.BooleanField()
     name=models.CharField(max_length=255)

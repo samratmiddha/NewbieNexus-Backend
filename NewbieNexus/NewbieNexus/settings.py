@@ -133,6 +133,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
+
 
 CSRF_TRUSTED_ORIGINS = 'http://localhost:3000',
 
@@ -157,6 +159,9 @@ CORS_ALLOW_METHODS = [
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+MEDIA_URL='/'
+MEDIA_ROOT=BASE_DIR
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

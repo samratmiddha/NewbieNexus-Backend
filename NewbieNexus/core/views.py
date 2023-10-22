@@ -1,12 +1,40 @@
 from rest_framework import viewsets
 from core.models import Club,Interest
-from core.serializers import ClubSerializer,InterestSerializer,CSVFileSerializer
+from core.serializers import ClubSerializer,InterestSerializer,CSVFileSerializer,UserSerializer
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import action
+from rest_framework.decorators import action,api_view,permission_classes
 from rest_framework.response import Response
 import pandas
 from django.contrib.auth.models import User
 from rest_framework import status
+from django.contrib.auth import login,authenticate,logout
+from django.shortcuts import redirect
+from django.http import HttpResponse
+
+
+@api_view(('GET',))
+@permission_classes([])
+def check_login(request):
+    content = {'Logged_In': False}
+    if request.user.is_authenticated:
+        serializer = UserSerializer(request.user)
+        content = {'Logged_In': True, 'user': serializer.data}
+
+    return Response(content)
+
+
+@api_view(('POST',))
+def login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return HttpResponse('Login successful')
+        else:
+            return HttpResponse('Login failed')
+    return HttpResponse('Login failed')
 
 
 
@@ -51,7 +79,7 @@ class ClubViewSet(viewsets.ModelViewSet):
 
 class InterestViewSet(viewsets.ModelViewSet):
     model=Interest
-    permission_classes=[IsAuthenticated]
+    # permission_classes=[IsAuthenticated]
     serializer_class=InterestSerializer
     queryset=Interest.objects.all()
 
