@@ -9,5 +9,6 @@ router.register(r'interests',InterestViewSet,basename='InterestViewSet')
 urlpatterns = [
     path('',include(router.urls)),
     path('whoami/',check_login),
-    path('login/',login)
+    path('login/',login_view),
+    path('get_club_recommendations/',get_club_recommendations)
 ]

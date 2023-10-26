@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from core.constants import INTEREST_MODEL_OPTIONS
 
 
 class Club(models.Model):
@@ -16,7 +17,7 @@ class Club(models.Model):
 
 class Interest(models.Model):
     is_user_interest=models.BooleanField()
-    name=models.CharField(max_length=255)
+    name=models.CharField(max_length=255,choices=INTEREST_MODEL_OPTIONS)
     weight=models.IntegerField()
     club=models.ForeignKey(Club,on_delete=models.CASCADE,related_name='interesets',null=True,blank=True)
     user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='interests',null=True,blank=True)

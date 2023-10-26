@@ -10,6 +10,9 @@ from rest_framework import status
 from django.contrib.auth import login,authenticate,logout
 from django.shortcuts import redirect
 from django.http import HttpResponse
+from core.constants import INTEREST_OPTIONS
+from core.utils.getClubRecommendations import getClubRecommendations
+from core.utils.getMostSimilarInterest import getMostSimilarInterest
 
 
 @api_view(('GET',))
@@ -24,7 +27,7 @@ def check_login(request):
 
 
 @api_view(('POST',))
-def login(request):
+def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -35,6 +38,14 @@ def login(request):
         else:
             return HttpResponse('Login failed')
     return HttpResponse('Login failed')
+
+@api_view(('GET',))
+def get_club_recommendations(request):
+    user=request.GET.get('user')
+    ans=getClubRecommendations(user)
+    return Response(ans,status=status.HTTP_200_OK)
+    
+
 
 
 
@@ -83,6 +94,20 @@ class InterestViewSet(viewsets.ModelViewSet):
     serializer_class=InterestSerializer
     queryset=Interest.objects.all()
 
+    def create(self,request):
+        interest_string=request.data["interests"]
+        interests=interest_string.split(',')
+        interests=[obj.strip() for obj in interests]
+        interests=[getMostSimilarInterest(obj) for obj in interests]
+        user_interests=Interest.objects.filter(is_user_interest=True,user=request.data["user"])
+        serializer=InterestSerializer(user_interests,many=True)
+        user_interests_names=[obj["name"] for obj in serializer.data]
+        new_interests=[interest for interest in interests if interest not in user_interests_names]
+        for interest in new_interests:
+            Interest.objects.create(name=interest,is_user_interest=True,user=request.user,weight=2)
+        
+        return Response("Successyfully Created",status=status.HTTP_201_CREATED)
+        
     @action(methods=['GET'],detail=False,url_name='get_user_interests')
     def get_user_interests(self,request):
         user=request.GET.get('user')
@@ -98,6 +123,31 @@ class InterestViewSet(viewsets.ModelViewSet):
         interests=Interest.objects.filter(is_user_interest=False,club=club)
         serializer=InterestSerializer(interests,many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
+    
+    @action(methods=['GET'],detail=False,url_name='get_all_interests')
+    def get_all_interests(self,request):
+        user=request.GET.get('user')
+        user=User.objects.get(id=user)
+        interests=Interest.objects.filter(is_user_interest=True,user=user)
+        serializer=InterestSerializer(interests,many=True)
+        user_interests = [obj["name"] for obj in serializer.data]
+        interest_array=[]
+        for interest in serializer.data:
+            interest_array.append({
+                    'id':interest["id"],
+                    'name':interest["name"],
+                    'user_interest':True,
+                })
+        for interest in INTEREST_OPTIONS:
+            if(interest not in user_interests):
+                interest_array.append({
+                    'name':interest,
+                    'user_interest':False,
+                })
+
+        return Response(interest_array,status=status.HTTP_200_OK)
+
+
         
 
 
