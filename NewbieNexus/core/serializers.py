@@ -31,5 +31,11 @@ class InterestSerializer(serializers.ModelSerializer):
         fields='__all__'
         model=Interest
 
+class InterestDetailSerializer(serializers.ModelSerializer):
+    user=UserSerializer
+    class Meta:
+        fields='__all__'
+        model=Interest
+
 class CSVFileSerializer(serializers.Serializer):
     csv_file = serializers.FileField()

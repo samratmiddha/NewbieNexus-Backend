@@ -44,6 +44,13 @@ def get_club_recommendations(request):
     user=request.GET.get('user')
     ans=getClubRecommendations(user)
     return Response(ans,status=status.HTTP_200_OK)
+
+
+@api_view(('GET',))
+def logout_user(request):
+    if request.user.is_authenticated:
+        logout(request)
+        return Response("user logged out Successfully")
     
 
 
@@ -94,8 +101,13 @@ class InterestViewSet(viewsets.ModelViewSet):
     serializer_class=InterestSerializer
     queryset=Interest.objects.all()
 
-    def create(self,request):
-        interest_string=request.data["interests"]
+    def create(self,request,*args, **kwargs):
+        try:
+             interest_string=request.data["interests"]
+        except:
+            response = super().create(request, *args, **kwargs)
+            return Response({"msg":"done"},status=status.HTTP_201_CREATED)
+
         interests=interest_string.split(',')
         interests=[obj.strip() for obj in interests]
         interests=[getMostSimilarInterest(obj) for obj in interests]

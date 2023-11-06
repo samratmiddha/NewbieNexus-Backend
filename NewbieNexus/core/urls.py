@@ -10,5 +10,6 @@ urlpatterns = [
     path('',include(router.urls)),
     path('whoami/',check_login),
     path('login/',login_view),
-    path('get_club_recommendations/',get_club_recommendations)
+    path('get_club_recommendations/',get_club_recommendations),
+    path('logout/',logout_user)
 ]

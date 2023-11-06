@@ -70,7 +70,8 @@ INTEREST_OPTIONS=[
   "Product management",
   "Analytics",
   "Formula one",
-  "Business administration"
+  "Business administration",
+  "probs"
 ]
 
 INTEREST_MODEL_OPTIONS = [
@@ -146,4 +147,5 @@ INTEREST_MODEL_OPTIONS = [
     ("Analytics", "Analytics"),
     ("Formula one", "Formula one"),
     ("Business administration", "Business administration"),
+    ("probs","probs")
 ]
